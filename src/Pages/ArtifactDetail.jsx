@@ -12,7 +12,6 @@ const ArtifactDetail = () => {
   const { user } = use(AuthContext);
   const initialData = useLoaderData();
   const [artifact, setArtifact] = useState(initialData);
-  
 
   const { _id, likedBy, likeCount, addedBy } = artifact;
   const [isLiked, setIsLiked] = useState(likedBy?.includes(false));
@@ -72,7 +71,7 @@ const ArtifactDetail = () => {
   return (
     <div className="min-h-screen md:bg-gradient-to-b md:from-stone-100 md:to-amber-50 py-12 px-4 sm:px-6 lg:px-8 mt-64 md:mt-30">
       <Helmet>
-        <title>Artifacta | {artifact.name || 'artifact details'}</title>
+        <title>Artifacta | {artifact.name || "artifact details"}</title>
       </Helmet>
       <div className="max-w-4xl mx-auto">
         <button
@@ -108,38 +107,34 @@ const ArtifactDetail = () => {
               </span>
             </div>
 
-            {/* Like Count */}
             <div className="flex items-center gap-4 mb-6">
-  {/* Like Count with Pulse Animation */}
-  <div className="flex items-center bg-gradient-to-r from-amber-100 to-amber-50 px-3 py-1.5 rounded-lg border border-amber-200">
-    <Heart className="w-5 h-5 text-amber-600 mr-2" />
-    <span className="font-medium text-amber-800">{count || 0}</span>
-  </div>
+              <div className="flex items-center bg-gradient-to-r from-amber-100 to-amber-50 px-3 py-1.5 rounded-lg border border-amber-200">
+                <Heart className="w-5 h-5 text-amber-600 mr-2" />
+                <span className="font-medium text-amber-800">{count || 0}</span>
+              </div>
 
-  {/* Like Button with Hover & Active Effects */}
-  <button
-    onClick={handleLike}
-    className={`flex items-center gap-1.5 px-4 py-2 rounded-lg transition-all duration-300 cursor-pointer ${
-      isLiked
-        ? "bg-amber-600 text-white hover:bg-amber-700 shadow-sm"
-        : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
-    }`}
-  >
-    {isLiked ? (
-      <>
-        <Heart className="w-5 h-5 fill-current" />
-        <span>Liked</span>
-      </>
-    ) : (
-      <>
-        <Heart className="w-5 h-5" />
-        <span>Like</span>
-      </>
-    )}
-  </button>
-</div>
+              <button
+                onClick={handleLike}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg transition-all duration-300 cursor-pointer ${
+                  isLiked
+                    ? "bg-amber-600 text-white hover:bg-amber-700 shadow-sm"
+                    : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
+                }`}
+              >
+                {isLiked ? (
+                  <>
+                    <Heart className="w-5 h-5 fill-current" />
+                    <span>Liked</span>
+                  </>
+                ) : (
+                  <>
+                    <Heart className="w-5 h-5" />
+                    <span>Like</span>
+                  </>
+                )}
+              </button>
+            </div>
 
-            {/* Artifact Details */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="bg-amber-50 p-4 rounded-lg">
                 <h3 className="flex items-center text-amber-700 mb-2">

@@ -162,7 +162,7 @@ const UpdateArtifact = () => {
   }
 
   return (
-    <div className="min-h-screen sm:bg-gradient-to-b sm:from-stone-100 sm:to-amber-50 py-12 px-4 sm:px-6 lg:px-8 mt-70 md:mt-30">
+    <div className="min-h-screen sm:bg-gradient-to-b sm:from-stone-100 sm:to-amber-50 pt-12  sm:px-6 lg:px-8 mt-70 md:mt-30">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
