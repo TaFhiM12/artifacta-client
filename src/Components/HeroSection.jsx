@@ -114,7 +114,7 @@ const ArtifactSlider = () => {
   return (
     <section
       ref={containerRef}
-      className="relative h-[85vh] overflow-hidden bg-stone-900 mt-70 md:mt-30"
+      className="relative h-[100vh] overflow-hidden bg-stone-900 mt-70 md:mt-30"
       onMouseMove={handleMouseMove}
       onMouseEnter={stopAutoplay}
       onMouseLeave={startAutoplay}
