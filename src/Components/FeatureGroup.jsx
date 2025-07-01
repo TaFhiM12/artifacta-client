@@ -47,7 +47,7 @@ const FeatureGroup = () => {
     .slice(0, 6);
 
   return (
-    <section className="max-w-7xl md:bg-gradient-to-b md:from-stone-100 md:to-amber-50 mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 my-6 mt-20">
+    <section className="max-w-7xl md:bg-gradient-to-b md:from-stone-100 md:to-amber-50 mx-auto sm:px-6 lg:px-8 py-16 md:py-20 my-6 mt-20">
       <div className="text-center mb-16">
         <motion.h2
           className="text-4xl md:text-5xl font-bold mb-4 font-serif"
