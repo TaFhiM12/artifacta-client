@@ -24,7 +24,7 @@ const PreservationTips = () => {
   ];
 
   return (
-    <section className="py-16 md:bg-gradient-to-b md:from-stone-100 md:to-amber-50 mt-20">
+    <section className="py-16 md:bg-gradient-to-b md:from-stone-100 md:to-amber-50 ">
       <div className="container mx-auto px-4">
         <motion.h2
           initial={{ opacity: 0 }}

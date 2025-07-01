@@ -34,7 +34,7 @@ const TimelineSection = () => {
   ];
 
   return (
-    <section className="py-16 mt-30 md:bg-gradient-to-b md:from-stone-100 md:to-amber-50 relative overflow-hidden mb-4">
+    <section className="py-16 md:bg-gradient-to-b md:from-stone-100 md:to-amber-50 relative overflow-hidden mb-4">
       {/* Ancient paper texture overlay */}
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/rice-paper.png')] opacity-10"></div>
       
@@ -45,7 +45,7 @@ const TimelineSection = () => {
           transition={{ duration: 0.5 }}
           className="text-4xl font-bold text-center mb-12 text-amber-800 font-serif"
         >
-          <span className="border-b-2 border-amber-600 pb-2">Chronicles of Discovery</span>
+          <span className="md:border-b-2 border-amber-600 pb-2">Chronicles of Discovery</span>
         </motion.h2>
         
         <div className="relative">
