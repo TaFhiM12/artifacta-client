@@ -51,7 +51,7 @@ const AllArtifactsPage = () => {
   const artifactTypes = ['All', ...new Set(artifacts.map(artifact => artifact.type))];
 
   return (
-    <div className="min-h-screen md:bg-gradient-to-b md:from-stone-100 md:to-amber-50 px-4 sm:px-6 lg:px-8 pt-10 mt-70 md:mt-30 pb-12">
+    <div className="min-h-screen md:bg-gradient-to-b md:from-stone-100 md:to-amber-50  sm:px-6 lg:px-8 pt-10 mt-70 md:mt-30 pb-12">
       <Helmet>
         <title>Artifacta | Explore Artifacts</title>
       </Helmet>

@@ -123,7 +123,7 @@ const MyCollection = () => {
     );
 
   return (
-    <div className="min-h-screen md:bg-gradient-to-b md:from-stone-100 md:to-amber-50 px-4 py-8 mt-70 md:mt-30">
+    <div className="min-h-screen md:bg-gradient-to-b md:from-stone-100 md:to-amber-50 md:px-4 py-8 mt-70 md:mt-30">
       <Helmet>
         <title>Artifacta | My Collection</title>
       </Helmet>

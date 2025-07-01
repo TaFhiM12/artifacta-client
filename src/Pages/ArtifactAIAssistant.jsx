@@ -200,7 +200,6 @@ const ArtifactAIAssistant = () => {
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col container mx-auto px-4 py-4 overflow-hidden">
-        {/* Error Display */}
         {error && (
           <div className="bg-amber-100 border-l-4 border-amber-600 p-4 rounded-r-lg shadow-sm mb-4">
             <div className="flex items-start gap-3">
@@ -244,10 +243,8 @@ const ArtifactAIAssistant = () => {
           </div>
         )}
 
-        {/* Scrollable Messages Area */}
         <div className="flex-1 overflow-y-auto mb-4" ref={messagesContainerRef}>
           <div className="bg-white rounded-xl shadow-lg border border-amber-200 relative min-h-full">
-            {/* Faux aged paper effect */}
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/old-paper.png')] opacity-10 pointer-events-none"></div>
 
             <div className="p-4">
