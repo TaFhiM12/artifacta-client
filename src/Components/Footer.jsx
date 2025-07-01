@@ -49,10 +49,10 @@ const Footer = () => {
   ];
 
   const museumPartners = [
-    { name: "British Museum", url: "#" },
-    { name: "Louvre", url: "#" },
-    { name: "Metropolitan", url: "#" },
-    { name: "Cairo Museum", url: "#" }
+    { name: "British Museum"},
+    { name: "Louvre"},
+    { name: "Metropolitan"},
+    { name: "Cairo Museum"}
   ];
 
   return (
@@ -211,14 +211,13 @@ const Footer = () => {
             <h4 className="text-xs font-semibold uppercase mt-6 mb-3 text-amber-700">ACCREDITED BY:</h4>
             <div className="flex flex-wrap gap-2">
               {museumPartners.map((museum, index) => (
-                <motion.a
+                <motion.span
                   key={index}
-                  href={museum.url}
                   whileHover={{ y: -2 }}
                   className="px-3 py-1 bg-white text-xs rounded-full border border-amber-200 text-amber-800 hover:bg-amber-50"
                 >
                   {museum.name}
-                </motion.a>
+                </motion.span>
               ))}
             </div>
           </div>
@@ -241,18 +240,18 @@ const Footer = () => {
           </div>
           
           <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/privacy" className="text-xs text-amber-700 hover:text-amber-900 transition hover:underline">
+            <span  className="text-xs text-amber-700 hover:text-amber-900 transition hover:underline">
               Conservation Ethics
-            </Link>
-            <Link to="/terms" className="text-xs text-amber-700 hover:text-amber-900 transition hover:underline">
+            </span>
+            <span className="text-xs text-amber-700 hover:text-amber-900 transition hover:underline">
               Digital Stewardship
-            </Link>
-            <Link to="/donate" className="text-xs text-amber-700 hover:text-amber-900 transition hover:underline">
+            </span>
+            <span className="text-xs text-amber-700 hover:text-amber-900 transition hover:underline">
               Support Our Mission
-            </Link>
-            <Link to="/contact" className="text-xs text-amber-700 hover:text-amber-900 transition hover:underline">
+            </span>
+            <span className="text-xs text-amber-700 hover:text-amber-900 transition hover:underline">
               Become a Patron
-            </Link>
+            </span>
           </div>
         </motion.div>
       </div>
