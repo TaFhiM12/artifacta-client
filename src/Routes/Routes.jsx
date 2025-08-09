@@ -65,7 +65,7 @@ export const router = createBrowserRouter([
           </Suspense>
         ),
       },
-      
+
       {
         path: "/allArtifacts",
         element: (
@@ -96,18 +96,23 @@ export const router = createBrowserRouter([
         path: "/assistant",
         element: (
           <Suspense fallback={<LoadingSpinner />}>
-            <ArtifactAIAssistant/>
+            <ArtifactAIAssistant />
           </Suspense>
         ),
       },
     ],
   },
   {
-    path: '/dashboard',
-    element: <Dashboard/>,
+    path: "/dashboard",
+    element: (
+      <PrivateRoutes>
+        <Dashboard />
+      </PrivateRoutes>
+    ),
     children: [
       {
-        index: true , element: <DashboardHome/>
+        index: true,
+        element: <DashboardHome />,
       },
       {
         path: "myProfile",
@@ -183,6 +188,6 @@ export const router = createBrowserRouter([
           </Suspense>
         ),
       },
-    ]
-  }
+    ],
+  },
 ]);

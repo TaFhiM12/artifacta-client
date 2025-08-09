@@ -3,6 +3,8 @@ import { FaSearch, FaFilter, FaHeart, FaHistory, FaGlobeAmericas } from 'react-i
 import { Link } from 'react-router';
 import LoadingSpinner from '../Components/LoadingSpinner';
 import { Helmet } from 'react-helmet';
+import { motion } from 'framer-motion';
+import useAxiosSecure from '../hooks/useAxiosSecure';
 
 const AllArtifactsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -12,11 +14,14 @@ const AllArtifactsPage = () => {
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalArtifacts, setTotalArtifacts] = useState(0);
+  const axiosSecure = useAxiosSecure();
 
+  // Debounce search term
   useEffect(() => {
     const timerId = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
-      setPage(1);
+      setPage(1); 
     }, 500);
     return () => clearTimeout(timerId);
   }, [searchTerm]);
@@ -25,21 +30,25 @@ const AllArtifactsPage = () => {
     const fetchArtifacts = async () => {
       setIsLoading(true);
       try {
-        let url = `${import.meta.env.VITE_URL}artifacts/all?page=${page}&limit=9`;
+        let url = `/artifacts/all?page=${page}&limit=9`;
+        let params = { page, limit: 9 };
 
         if (debouncedSearchTerm) {
-          url = `${import.meta.env.VITE_URL}search-artifacts?q=${encodeURIComponent(debouncedSearchTerm)}&page=${page}&limit=9`;
+          url = `/search-artifacts`;
+          params = { ...params, q: debouncedSearchTerm };
         }
 
-        const response = await fetch(url);
-        const data = await response.json();
+        const response = await axiosSecure.get(url, { params });
+        const data = response.data;
 
         if (data.artifacts) {
           setArtifacts(data.artifacts);
           setTotalPages(data.totalPages);
+          setTotalArtifacts(data.total);
         } else {
           setArtifacts(data);
           setTotalPages(1);
+          setTotalArtifacts(data.length);
         }
       } catch (error) {
         console.error("Error fetching artifacts:", error);
@@ -49,7 +58,13 @@ const AllArtifactsPage = () => {
     };
 
     fetchArtifacts();
-  }, [debouncedSearchTerm, page]);
+  }, [debouncedSearchTerm, page, axiosSecure]);
+
+  useEffect(() => {
+    if (artifacts.length === 0 && page > 1) {
+      setPage(page - 1);
+    }
+  }, [artifacts, page]);
 
   const filteredArtifacts = artifacts.filter(
     (artifact) => selectedType === 'All' || artifact.type === selectedType
@@ -57,23 +72,64 @@ const AllArtifactsPage = () => {
 
   const artifactTypes = ['All', ...new Set(artifacts.map(a => a.type))];
 
+  const getPaginationButtons = () => {
+    const buttons = [];
+    const maxVisibleButtons = 5;
+
+    if (totalPages <= maxVisibleButtons) {
+      for (let i = 1; i <= totalPages; i++) {
+        buttons.push(i);
+      }
+    } else {
+      buttons.push(1);
+
+      if (page > 3) {
+        buttons.push('...');
+      }
+      const start = Math.max(2, page - 1);
+      const end = Math.min(totalPages - 1, page + 1);
+
+      for (let i = start; i <= end; i++) {
+        if (i > 1 && i < totalPages) {
+          buttons.push(i);
+        }
+      }
+
+      if (page < totalPages - 2) {
+        buttons.push('...');
+      }
+
+      buttons.push(totalPages);
+    }
+
+    return buttons;
+  };
+
   return (
-    <div className="min-h-screen md:bg-gradient-to-b md:from-stone-100 md:to-amber-50 sm:px-6 lg:px-8 pt-10 pb-12 mt-70 md:mt-30">
+    <div className="min-h-screen bg-gradient-to-b from-stone-100 to-amber-50 px-4 sm:px-6 lg:px-8 py-12">
       <Helmet>
         <title>Artifacta | Explore Artifacts</title>
       </Helmet>
 
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-amber-900 mb-4">
+          <motion.h1 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl md:text-5xl font-bold text-amber-900 mb-4"
+          >
             Explore Historical Artifacts
-          </h1>
+          </motion.h1>
           <p className="text-lg text-stone-600 max-w-2xl mx-auto">
-            Discover artifacts from ancient civilizations and historical periods
+            Discover {totalArtifacts} artifacts from ancient civilizations and historical periods
           </p>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-6 justify-between items-center mb-12 p-6 bg-white rounded-xl shadow-md border border-stone-200">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col md:flex-row gap-6 justify-between items-center mb-12 p-6 bg-white rounded-xl shadow-md border border-stone-200"
+        >
           <div className="relative w-full md:w-2/3">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <FaSearch className="text-amber-500 text-lg" />
@@ -94,14 +150,17 @@ const AllArtifactsPage = () => {
             <select
               className="border border-stone-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-amber-500 shadow-sm text-stone-700 w-full"
               value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
+              onChange={(e) => {
+                setSelectedType(e.target.value);
+                setPage(1); // Reset to first page when filter changes
+              }}
             >
               {artifactTypes.map((type) => (
                 <option key={type} value={type}>{type}</option>
               ))}
             </select>
           </div>
-        </div>
+        </motion.div>
 
         {isLoading ? (
           <LoadingSpinner />
@@ -111,7 +170,13 @@ const AllArtifactsPage = () => {
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                   {filteredArtifacts.map((artifact) => (
-                    <div key={artifact._id} className="group bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-stone-100">
+                    <motion.div 
+                      key={artifact._id} 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      whileHover={{ y: -5 }}
+                      className="group bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 border border-stone-100"
+                    >
                       <div className="relative h-64 overflow-hidden">
                         <img
                           src={artifact.imageUrl}
@@ -150,52 +215,68 @@ const AllArtifactsPage = () => {
                           </div>
                         </div>
                         <Link to={`/dashboard/artifact-details/${artifact._id}`}>
-                          <button className="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white font-medium rounded-lg transition-all shadow hover:shadow-md">
+                          <button className="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white font-medium rounded-lg transition-all shadow hover:shadow-md hover:from-amber-600 hover:to-amber-700">
                             View Details
                           </button>
                         </Link>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
 
-                <div className="flex justify-center mt-8 space-x-2">
-                  <button
-                    onClick={() => setPage((p) => Math.max(p - 1, 1))}
-                    disabled={page === 1}
-                    className="px-4 py-2 bg-stone-200 rounded hover:bg-stone-300 disabled:opacity-50"
-                  >
-                    Prev
-                  </button>
-                  {[...Array(totalPages)].map((_, i) => (
+                {totalPages > 1 && (
+                  <div className="flex justify-center mt-12 space-x-2">
                     <button
-                      key={i}
-                      onClick={() => setPage(i + 1)}
-                      className={`px-4 py-2 rounded ${page === i + 1 ? 'bg-amber-500 text-white' : 'bg-stone-200 hover:bg-stone-300'}`}
+                      onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                      disabled={page === 1}
+                      className="px-4 py-2 bg-stone-200 rounded-lg hover:bg-stone-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
-                      {i + 1}
+                      Previous
                     </button>
-                  ))}
-                  <button
-                    onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-                    disabled={page === totalPages}
-                    className="px-4 py-2 bg-stone-200 rounded hover:bg-stone-300 disabled:opacity-50"
-                  >
-                    Next
-                  </button>
-                </div>
+
+                    {getPaginationButtons().map((button, index) => (
+                      button === '...' ? (
+                        <span key={index} className="px-4 py-2">...</span>
+                      ) : (
+                        <button
+                          key={index}
+                          onClick={() => setPage(button)}
+                          className={`px-4 py-2 rounded-lg ${page === button ? 'bg-amber-600 text-white' : 'bg-stone-200 hover:bg-stone-300'} transition-colors`}
+                        >
+                          {button}
+                        </button>
+                      )
+                    ))}
+
+                    <button
+                      onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+                      disabled={page === totalPages}
+                      className="px-4 py-2 bg-stone-200 rounded-lg hover:bg-stone-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
               </>
             ) : (
-              <div className="bg-white rounded-xl shadow-lg p-12 text-center">
-                <h3 className="text-2xl font-bold text-stone-700">No Artifacts Found</h3>
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="bg-white rounded-xl shadow-lg p-12 text-center"
+              >
+                <h3 className="text-2xl font-bold text-stone-700 mb-4">No Artifacts Found</h3>
                 <p className="text-stone-500 mb-6">Try adjusting your search or filters.</p>
                 <button
-                  onClick={() => { setSearchTerm(''); setSelectedType('All'); }}
-                  className="px-6 py-2 bg-stone-200 hover:bg-stone-300 text-stone-700 rounded-lg"
+                  onClick={() => { 
+                    setSearchTerm(''); 
+                    setSelectedType('All');
+                    setPage(1);
+                  }}
+                  className="px-6 py-3 bg-stone-200 hover:bg-stone-300 text-stone-700 rounded-lg transition-colors"
                 >
                   Reset Filters
                 </button>
-              </div>
+              </motion.div>
             )}
           </>
         )}
