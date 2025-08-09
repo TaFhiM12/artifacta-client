@@ -65,37 +65,7 @@ export const router = createBrowserRouter([
           </Suspense>
         ),
       },
-
-      {
-        path: "/myProfile",
-        element: (
-          <Suspense fallback={<LoadingSpinner />}>
-            <PrivateRoutes>
-              <MyProfilePage />
-            </PrivateRoutes>
-          </Suspense>
-        ),
-      },
-      {
-        path: "/update-profile",
-        element: (
-          <Suspense fallback={<LoadingSpinner />}>
-            <PrivateRoutes>
-              <UpdateProfilePage />
-            </PrivateRoutes>
-          </Suspense>
-        ),
-      },
-      {
-        path: "/addArtifacts",
-        element: (
-          <Suspense fallback={<LoadingSpinner />}>
-            <PrivateRoutes>
-              <AddArtifactPage />
-            </PrivateRoutes>
-          </Suspense>
-        ),
-      },
+      
       {
         path: "/allArtifacts",
         element: (
@@ -105,50 +75,7 @@ export const router = createBrowserRouter([
         ),
         loader: () => fetch(`${import.meta.env.VITE_URL}artifacts`),
       },
-      {
-        path: "/artifact-details/:id",
-        element: (
-          <Suspense fallback={<LoadingSpinner />}>
-            <PrivateRoutes>
-              <ArtifactDetail />
-            </PrivateRoutes>
-          </Suspense>
-        ),
-        loader: ({ params }) =>
-          fetch(`${import.meta.env.VITE_URL}artifacts/${params.id}`),
-      },
-      {
-        path: "/myCollection/:email",
-        element: (
-          <Suspense fallback={<LoadingSpinner />}>
-            <PrivateRoutes>
-              <MyCollection />
-            </PrivateRoutes>
-          </Suspense>
-        ),
-      },
-      {
-        path: "/update-artifact/:id",
-        element: (
-          <Suspense fallback={<LoadingSpinner />}>
-            <PrivateRoutes>
-              <UpdateArtifact />
-            </PrivateRoutes>
-          </Suspense>
-        ),
-        loader: ({ params }) =>
-          fetch(`${import.meta.env.VITE_URL}artifacts/${params.id}`),
-      },
-      {
-        path: "/likedItems/:email",
-        element: (
-          <Suspense fallback={<LoadingSpinner />}>
-            <PrivateRoutes>
-              <MyLikedPage />
-            </PrivateRoutes>
-          </Suspense>
-        ),
-      },
+
       {
         path: "/accessManual",
         element: (
@@ -181,7 +108,81 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true , element: <DashboardHome/>
-      }
+      },
+      {
+        path: "myProfile",
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <PrivateRoutes>
+              <MyProfilePage />
+            </PrivateRoutes>
+          </Suspense>
+        ),
+      },
+      {
+        path: "artifact-details/:id",
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <PrivateRoutes>
+              <ArtifactDetail />
+            </PrivateRoutes>
+          </Suspense>
+        ),
+        loader: ({ params }) =>
+          fetch(`${import.meta.env.VITE_URL}artifacts/${params.id}`),
+      },
+      {
+        path: "myCollection/:email",
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <PrivateRoutes>
+              <MyCollection />
+            </PrivateRoutes>
+          </Suspense>
+        ),
+      },
+      {
+        path: "update-artifact/:id",
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <PrivateRoutes>
+              <UpdateArtifact />
+            </PrivateRoutes>
+          </Suspense>
+        ),
+        loader: ({ params }) =>
+          fetch(`${import.meta.env.VITE_URL}artifacts/${params.id}`),
+      },
+      {
+        path: "likedItems/:email",
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <PrivateRoutes>
+              <MyLikedPage />
+            </PrivateRoutes>
+          </Suspense>
+        ),
+      },
+      {
+        path: "addArtifacts",
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <PrivateRoutes>
+              <AddArtifactPage />
+            </PrivateRoutes>
+          </Suspense>
+        ),
+      },
+      {
+        path: "update-profile",
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <PrivateRoutes>
+              <UpdateProfilePage />
+            </PrivateRoutes>
+          </Suspense>
+        ),
+      },
     ]
   }
 ]);

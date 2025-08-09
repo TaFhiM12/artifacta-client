@@ -69,7 +69,7 @@ const LoginPage = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen flex  items-center justify-around  px-4 mt-64 md:mt-30 md:bg-gradient-to-b md:from-stone-100 md:to-amber-50"
+      className="min-h-screen flex  items-center justify-around py-4 px-4 mt-64 md:mt-30"
     >
       
       <Helmet>

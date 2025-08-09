@@ -11,23 +11,59 @@ import {
   FiX
 } from "react-icons/fi";
 import { AuthContext } from "../../Contexts/AuthContext";
+import Swal from "sweetalert2";
 
 const Dashboard = () => {
-  const { user, signInUser } = useContext(AuthContext);
+  const { user, signOutUser , setUser } = useContext(AuthContext);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   
-  const handleSignOut = () => {
-    signInUser();
-  };
-
+   const handleSignOut = () => {
+      Swal.fire({
+        title: "Signing Out",
+        text: "Please wait while we securely sign you out...",
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        timer: 1500,
+        willOpen: () => {
+          Swal.showLoading();
+        },
+      });
+  
+      signOutUser()
+        .then(() => {
+          setUser(null);
+          Swal.fire({
+            icon: "success",
+            title: "Signed Out Successfully",
+            text: "You have been securely signed out.",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+            willClose: () => {
+              Navigate("/login");
+            },
+          });
+        })
+        .catch((err) => {
+          console.error("Sign out failed:", err);
+          Swal.fire({
+            icon: "error",
+            title: "Sign Out Failed",
+            text: "Could not sign out. Please try again.",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+          });
+        });
+    };
   const toggleMobileSidebar = () => {
     setMobileSidebarOpen(!mobileSidebarOpen);
   };
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-stone-50">
-      {/* Mobile Header */}
-      <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-amber-100">
+      {/* Mobile Header - Always Sticky */}
+      <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-amber-100 sticky top-0 z-40">
         <h1 className="text-xl font-bold text-amber-800">Artifact Tracker</h1>
         <button 
           onClick={toggleMobileSidebar}
@@ -37,6 +73,7 @@ const Dashboard = () => {
         </button>
       </div>
 
+     
       <AnimatePresence>
         {(mobileSidebarOpen || !window.matchMedia("(max-width: 768px)").matches) && (
           <motion.div
@@ -44,7 +81,7 @@ const Dashboard = () => {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
             transition={{ type: "spring", stiffness: 100 }}
-            className={`fixed md:relative z-50 w-64 bg-white shadow-lg md:shadow-none md:border-r border-amber-100 h-full ${
+            className={`fixed md:sticky top-0 z-30 w-64 bg-white shadow-lg md:shadow-none md:border-r border-amber-100 h-screen ${
               mobileSidebarOpen ? 'block' : 'hidden md:block'
             }`}
           >
@@ -89,7 +126,7 @@ const Dashboard = () => {
                 </motion.div>
 
                 <NavLink
-                  to="/dashboard/myCollection/profile"
+                  to={`/dashboard/myCollection/${user?.email}`}
                   onClick={() => setMobileSidebarOpen(false)}
                   className={({ isActive }) =>
                     `flex items-center p-3 rounded-lg transition-colors ${
@@ -104,7 +141,7 @@ const Dashboard = () => {
                 </NavLink>
 
                 <NavLink
-                  to="/dashboard/likedItems/profile"
+                  to={`/dashboard/likedItems/${user?.email}`}
                   onClick={() => setMobileSidebarOpen(false)}
                   className={({ isActive }) =>
                     `flex items-center p-3 rounded-lg transition-colors ${
@@ -122,7 +159,7 @@ const Dashboard = () => {
               {/* Profile Section */}
               <div className="p-4 border-t border-amber-100">
                 <NavLink
-                  to="/dashboard/profile"
+                  to="/dashboard/myProfile"
                   end
                   onClick={() => setMobileSidebarOpen(false)}
                   className={({ isActive }) =>
@@ -166,13 +203,13 @@ const Dashboard = () => {
       {/* Overlay for mobile */}
       {mobileSidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          className="fixed inset-0 bg-black/50 z-20 md:hidden"
           onClick={() => setMobileSidebarOpen(false)}
         />
       )}
 
       {/* Main Content Area */}
-      <main className="flex-1 p-6 bg-amber-50/50">
+      <main className="flex-1 p-6 bg-amber-50/50 overflow-y-auto">
         <Outlet/>
       </main>
     </div>

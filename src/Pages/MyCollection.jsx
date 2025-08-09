@@ -123,7 +123,7 @@ const MyCollection = () => {
     );
 
   return (
-    <div className="min-h-screen md:bg-gradient-to-b md:from-stone-100 md:to-amber-50 md:px-4 py-8 mt-70 md:mt-30">
+    <div className="min-h-screen  md:px-4 py-8">
       <Helmet>
         <title>Artifacta | My Collection</title>
       </Helmet>
@@ -203,7 +203,7 @@ const MyCollection = () => {
 
                   <div className="flex justify-between mt-6">
                     <Link
-                      to={`/update-artifact/${artifact._id}`}
+                      to={`/dashboard/update-artifact/${artifact._id}`}
                       className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
                     >
                       <FaEdit className="mr-2" />

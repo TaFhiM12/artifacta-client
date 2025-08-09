@@ -112,7 +112,7 @@ const RegisterPage = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen flex items-center justify-center space-x-10  px-4 mt-70 md:bg-gradient-to-b md:from-stone-100 md:to-amber-50 md:mt-30 md:pb-6"
+      className="min-h-screen flex items-center justify-center space-x-10  px-4  mt-70 md:mt-30 md:pb-6 pt-4"
     >
       <Helmet>
         <title>Artifacta | Register</title>

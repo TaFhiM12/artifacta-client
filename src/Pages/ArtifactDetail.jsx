@@ -69,7 +69,7 @@ const ArtifactDetail = () => {
   }
 
   return (
-    <div className="min-h-screen md:bg-gradient-to-b md:from-stone-100 md:to-amber-50 py-12 px-4 sm:px-6 lg:px-8 mt-64 md:mt-30">
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
       <Helmet>
         <title>Artifacta | {artifact.name || "artifact details"}</title>
       </Helmet>

@@ -145,7 +145,7 @@ const AllArtifactsPage = () => {
                         </div>
                       </div>
                       
-                      <Link to={`/artifact-details/${artifact._id}`}>
+                      <Link to={`/dashboard/artifact-details/${artifact._id}`}>
                         <button className="w-full cursor-pointer py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium rounded-lg transition-all shadow hover:shadow-md flex items-center justify-center">
                           View Details
                         </button>

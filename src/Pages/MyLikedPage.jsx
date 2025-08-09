@@ -61,7 +61,7 @@ const MyLikedPage = () => {
   }
 
   return (
-    <div className="min-h-screen md:bg-gradient-to-b md:from-stone-100 md:to-amber-50 md:px-4 py-8 mt-70 md:mt-30">
+    <div className="min-h-screen  md:px-4 py-8">
       <Helmet>
         <title>Artifacta | My Liked Artifacts</title>
       </Helmet>
@@ -160,7 +160,7 @@ const MyLikedPage = () => {
                   </div>
 
                   <a
-                    href={`/artifact-details/${artifact._id}`}
+                    href={`/dashboard/artifact-details/${artifact._id}`}
                     className="block cursor-pointer w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium rounded-lg transition-all shadow hover:shadow-md text-center"
                   >
                     View Details

@@ -22,7 +22,7 @@ const MyProfilePage = () => {
   };
 
   return (
-    <div className="md:bg-gradient-to-b md:from-stone-100 md:to-amber-50 py-12 px-4 mt-64 md:mt-30">
+    <div className="py-12 px-4 ">
       <Helmet>
         <title>Artifacta | {user.displayName || 'My Profile'}</title>
       </Helmet>
@@ -68,7 +68,7 @@ const MyProfilePage = () => {
 
               <div className="mt-6 md:mt-0 md:ml-auto">
                 <Link
-                  to="/update-profile"
+                  to="/dashboard/update-profile"
                   className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-white bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
                 >
                   <FiEdit2 className="mr-2" />

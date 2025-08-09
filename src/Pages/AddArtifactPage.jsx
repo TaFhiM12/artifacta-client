@@ -92,7 +92,7 @@ const AddArtifactPage = () => {
   };
 
   return (
-    <div className="min-h-screen md:bg-gradient-to-b md:from-stone-100 md:to-amber-50 pt-12  sm:px-6 lg:px-8 mt-70 md:mt-30">
+    <div className="min-h-screen pt-12  sm:px-6 lg:px-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

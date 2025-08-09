@@ -48,14 +48,14 @@ const UpdateProfilePage = () => {
     };
 
     return (
-        <div className="md:bg-gradient-to-b md:from-stone-100 md:to-amber-50 py-12 px-4 mt-64 md:mt-30">
+        <div className="py-12 px-4 ">
             
             <Helmet>
                 <title>Artifacta | Update Profile</title>
             </Helmet>
             <div className="max-w-5xl mx-auto">
                 <Link 
-                    to="/myProfile" 
+                    to="/dashboard/myProfile" 
                     className="inline-flex items-center text-amber-600 hover:text-amber-800 mb-8"
                 >
                     <FiArrowLeft className="mr-2" />

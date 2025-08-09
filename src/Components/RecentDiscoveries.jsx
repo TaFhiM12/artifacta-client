@@ -84,7 +84,7 @@ const RecentDiscoveries = () => {
                           <p className="mt-3 text-gray-600 line-clamp-2">{artifact.shortDescription}</p>
                           <div className="mt-4">
                             <Link
-                              to={`/artifact-details/${artifact._id}`}
+                              to={`/dashboard/artifact-details/${artifact._id}`}
                               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-amber-600 hover:bg-amber-700"
                             >
                               View Discovery
