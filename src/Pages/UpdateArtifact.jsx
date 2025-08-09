@@ -126,7 +126,7 @@ const UpdateArtifact = () => {
         }
       });
       
-      navigate(`/myCollection/${user?.email}`);
+      navigate(`/dashboard/myCollection/${user?.email}`);
     } catch (error) {
       console.error("Error updating artifact:", error);
       let errorMessage = 'Failed to update artifact';
