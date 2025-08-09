@@ -106,7 +106,7 @@ const AllArtifactsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-stone-100 to-amber-50 px-4 sm:px-6 lg:px-8 py-12">
+    <div className="min-h-screen bg-gradient-to-b from-stone-100 to-amber-50 px-4 sm:px-6 lg:px-8 py-12 mt-70 md:mt-30">
       <Helmet>
         <title>Artifacta | Explore Artifacts</title>
       </Helmet>
@@ -152,7 +152,7 @@ const AllArtifactsPage = () => {
               value={selectedType}
               onChange={(e) => {
                 setSelectedType(e.target.value);
-                setPage(1); // Reset to first page when filter changes
+                setPage(1); 
               }}
             >
               {artifactTypes.map((type) => (

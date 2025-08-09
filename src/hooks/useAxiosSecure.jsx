@@ -4,7 +4,7 @@ import { AuthContext } from "../Contexts/AuthContext";
 import { useNavigate } from "react-router"; 
 
 const axiosInstance = axios.create({
-  baseURL: "https://artifacta-server.vercel.app",
+  baseURL: "http://localhost:3000",
 });
 
 const useAxiosSecure = () => {
