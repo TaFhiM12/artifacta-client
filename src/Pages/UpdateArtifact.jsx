@@ -182,7 +182,7 @@ const UpdateArtifact = () => {
             </svg>
             Back
           </button>
-          <h1 className="text-4xl font-bold text-amber-900 bg-clip-text">
+          <h1 className="text-2xl font-bold text-amber-800 bg-clip-text">
             <span className="relative">
               Update Artifact
               <span className="absolute bottom-0 left-0 w-full h-1 bg-amber-400 transform translate-y-1"></span>

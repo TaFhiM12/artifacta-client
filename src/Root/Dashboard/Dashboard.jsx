@@ -64,7 +64,8 @@ const Dashboard = () => {
     <div className="flex flex-col md:flex-row min-h-screen bg-stone-50">
       {/* Mobile Header - Always Sticky */}
       <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-amber-100 sticky top-0 z-40">
-        <h1 className="text-xl font-bold text-amber-800">Artifact Tracker</h1>
+        <Link to='/'>
+        <h1 className="text-xl font-bold text-amber-800">Artifacta</h1></Link>
         <button 
           onClick={toggleMobileSidebar}
           className="p-2 text-amber-700 rounded-lg hover:bg-amber-50"
@@ -86,7 +87,7 @@ const Dashboard = () => {
             }`}
           >
             <div className="p-4 border-b border-amber-100">
-              <h1 className="text-2xl font-bold text-amber-800">Artifact Tracker</h1>
+              <Link to='/' className="text-2xl font-bold text-amber-800">Artifacta</Link>
               <p className="text-sm text-amber-600">Dashboard</p>
             </div>
 

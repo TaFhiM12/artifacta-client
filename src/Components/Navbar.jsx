@@ -155,25 +155,7 @@ const NavBar = () => {
     <>
       {user ? (
         <div className="flex flex-col md:flex-row items-center space-x-1">
-          <motion.li
-            className="relative"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <NavLink
-              to="/addArtifacts"
-              className={({ isActive }) =>
-                `px-4 py-2 rounded-lg text-base font-medium transition-all duration-300 flex items-center ${
-                  isActive
-                    ? "text-white bg-gradient-to-r from-amber-600 to-orange-600 shadow-lg"
-                    : "text-gray-700 hover:text-amber-700 hover:bg-amber-50"
-                }`
-              }
-            >
-              <FiPlusSquare className="mr-2" />
-              Contribute
-            </NavLink>
-          </motion.li>
+          
           <motion.li
             className="relative"
             whileHover={{ scale: 1.05 }}
@@ -290,7 +272,6 @@ const NavBar = () => {
             </motion.form>
           </div>
 
-          {/* Right section - Navigation and user */}
           <div className="flex items-center">
             {/* Desktop navigation */}
             <nav className="hidden md:flex space-x-1 items-center">
@@ -350,8 +331,8 @@ const NavBar = () => {
                       transition={{ duration: 0.2 }}
                       className="absolute right-0 mt-2 w-56 origin-top-right bg-white rounded-xl shadow-xl ring-1 ring-amber-100 focus:outline-none z-50 overflow-hidden"
                     >
-                      <Link
-                        to="/myProfile"
+                      <div
+                       
                         className="px-4 flex flex-col justify-center items-center py-3 border-b border-amber-50"
                       >
                         <p className="text-sm font-medium text-amber-900 truncate">
@@ -360,11 +341,11 @@ const NavBar = () => {
                         <p className="text-xs text-amber-600 truncate">
                           {user.email}
                         </p>
-                      </Link>
+                      </div>
 
                       <div className="flex flex-col gap-1 p-2">
                         <NavLink
-                          to={`/myCollection/${user.email}`}
+                          to='/dashboard'
                           className={({ isActive }) =>
                             `px-3 py-2 flex items-center rounded-lg text-sm font-medium transition-colors duration-200 ${
                               isActive
@@ -374,23 +355,8 @@ const NavBar = () => {
                           }
                         >
                           <FiArchive className="mr-3" />
-                          My Collection
+                          Dashboard
                         </NavLink>
-
-                        <NavLink
-                          to={`/likedItems/${user.email}`}
-                          className={({ isActive }) =>
-                            `px-3 py-2 flex items-center rounded-lg text-sm font-medium transition-colors duration-200 ${
-                              isActive
-                                ? "text-white bg-gradient-to-r from-amber-500 to-amber-600 shadow-md"
-                                : "text-gray-700 hover:text-amber-700 hover:bg-amber-50"
-                            }`
-                          }
-                        >
-                          <FiHeart className="mr-3 " />
-                          Liked Items
-                        </NavLink>
-                       
                         <div className="border-t border-amber-50 my-1"></div>
 
                         <button
