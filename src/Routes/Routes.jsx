@@ -2,6 +2,7 @@ import { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router";
 import LoadingSpinner from "../Components/LoadingSpinner";
 import PrivateRoutes from "./PrivateRoutes";
+import Dashboard from "../Root/Dashboard/Dashboard";
 
 const Root = lazy(() => import("../Root/Root"));
 const HomePage = lazy(() => import("../Pages/HomePage"));
@@ -173,4 +174,8 @@ export const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: '/dashboard',
+    element: <Dashboard/>
+  }
 ]);
