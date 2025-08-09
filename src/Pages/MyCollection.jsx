@@ -15,30 +15,39 @@ const MyCollection = () => {
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalArtifacts, setTotalArtifacts] = useState(0);
   const limit = 6;
   const axiosSecure = useAxiosSecure();
 
-  useEffect(() => {
-    const fetchMyArtifacts = async () => {
-      setLoading(true);
-      try {
-        if (user?.email) {
-          const response = await axiosSecure.get(
-            `/artifacts/myCollection/${user.email}?page=${page}&limit=${limit}`
-          );
-          setMyArtifacts(response.data.data || []);
-          setTotalPages(response.data.totalPages || 1);
-          setError(null);
+  const fetchMyArtifacts = async () => {
+    setLoading(true);
+    try {
+      if (user?.email) {
+        const response = await axiosSecure.get(
+          `/artifacts/myCollection/${user.email}?page=${page}&limit=${limit}`
+        );
+        
+        // If current page is empty and not page 1, go to previous page
+        if (response.data.data?.length === 0 && page > 1) {
+          setPage(page - 1);
+          return;
         }
-      } catch (error) {
-        console.error("Error fetching my collection:", error);
-        setError(error.response?.data?.message || "Failed to load collection");
-        setMyArtifacts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
 
+        setMyArtifacts(response.data.data || []);
+        setTotalPages(response.data.totalPages || 1);
+        setTotalArtifacts(response.data.total || 0);
+        setError(null);
+      }
+    } catch (error) {
+      console.error("Error fetching my collection:", error);
+      setError(error.response?.data?.message || "Failed to load collection");
+      setMyArtifacts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchMyArtifacts();
   }, [user, axiosSecure, page]);
 
@@ -74,7 +83,16 @@ const MyCollection = () => {
               popup: "border-2 border-green-500 rounded-xl"
             }
           });
-          setMyArtifacts(prev => prev.filter(artifact => artifact._id !== id));
+
+          // Check if this was the last item on the current page
+          if (myArtifacts.length === 1 && page > 1) {
+            // If it was the last item and we're not on the first page,
+            // go to the previous page
+            setPage(page - 1);
+          } else {
+            // Otherwise refetch data to update pagination info
+            fetchMyArtifacts();
+          }
         }
       } catch (error) {
         await Swal.fire({
@@ -105,11 +123,11 @@ const MyCollection = () => {
             My Artifact Collection
           </h1>
           <p className="text-lg text-amber-600">
-            Your personal museum of historical treasures
+            {totalArtifacts} artifacts in your collection
           </p>
         </div>
 
-        {myArtifacts.length === 0 ? (
+        {myArtifacts.length === 0 && page === 1 ? (
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
