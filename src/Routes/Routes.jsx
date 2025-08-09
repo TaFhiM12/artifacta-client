@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router";
 import LoadingSpinner from "../Components/LoadingSpinner";
 import PrivateRoutes from "./PrivateRoutes";
 import Dashboard from "../Root/Dashboard/Dashboard";
+import DashboardHome from "../Root/Dashboard/Dashoardhome";
 
 const Root = lazy(() => import("../Root/Root"));
 const HomePage = lazy(() => import("../Pages/HomePage"));
@@ -176,6 +177,11 @@ export const router = createBrowserRouter([
   },
   {
     path: '/dashboard',
-    element: <Dashboard/>
+    element: <Dashboard/>,
+    children: [
+      {
+        index: true , element: <DashboardHome/>
+      }
+    ]
   }
 ]);
