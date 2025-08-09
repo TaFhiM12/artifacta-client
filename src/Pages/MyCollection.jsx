@@ -10,7 +10,6 @@ import {
   FaPlus,
   FaHeart,
   FaClock,
-  FaLayerGroup,
 } from "react-icons/fa";
 import { Helmet } from "react-helmet";
 import useAxiosSecure from "../hooks/useAxiosSecure";
@@ -20,6 +19,11 @@ const MyCollection = () => {
   const [myArtifacts, setMyArtifacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; // change to show more or fewer per page
+
   const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
@@ -74,9 +78,7 @@ const MyCollection = () => {
 
     if (result.isConfirmed) {
       try {
-        const response = await axiosSecure.delete(
-          `/artifacts/${id}`,
-        );
+        const response = await axiosSecure.delete(`/artifacts/${id}`);
 
         if (response.status === 200) {
           await Swal.fire({
@@ -92,8 +94,8 @@ const MyCollection = () => {
               title: "text-green-700 font-bold",
             },
             willClose: () => {
-              setMyArtifacts(
-                myArtifacts.filter((artifact) => artifact._id !== id)
+              setMyArtifacts((prev) =>
+                prev.filter((artifact) => artifact._id !== id)
               );
             },
           });
@@ -116,6 +118,18 @@ const MyCollection = () => {
     }
   };
 
+  // Pagination calculations
+  const totalPages = Math.ceil(myArtifacts.length / itemsPerPage);
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentArtifacts = myArtifacts.slice(indexOfFirst, indexOfLast);
+
+  const goToPage = (page) => {
+    if (page > 0 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
   if (loading) return <LoadingSpinner />;
   if (error)
     return (
@@ -123,7 +137,7 @@ const MyCollection = () => {
     );
 
   return (
-    <div className="min-h-screen  md:px-4 py-8">
+    <div className="min-h-screen md:px-4 py-8">
       <Helmet>
         <title>Artifacta | My Collection</title>
       </Helmet>
@@ -158,69 +172,104 @@ const MyCollection = () => {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {myArtifacts.map((artifact) => (
-              <div
-                key={artifact._id}
-                className="bg-white rounded-xl shadow-md overflow-hidden border border-amber-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-              >
-                <div className="relative h-56 overflow-hidden">
-                  <img
-                    src={artifact.imageUrl}
-                    alt={artifact.name}
-                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src =
-                        "https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80";
-                    }}
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-                    <h3 className="text-xl font-bold text-white">
-                      {artifact.name}
-                    </h3>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium">
-                      {artifact.type}
-                    </span>
-                    <div className="flex items-center text-amber-600">
-                      <FaHeart className="mr-1" />
-                      <span>{artifact.likedBy.length}</span>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {currentArtifacts.map((artifact) => (
+                <div
+                  key={artifact._id}
+                  className="bg-white rounded-xl shadow-md overflow-hidden border border-amber-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                >
+                  <div className="relative h-56 overflow-hidden">
+                    <img
+                      src={artifact.imageUrl}
+                      alt={artifact.name}
+                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src =
+                          "https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80";
+                      }}
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                      <h3 className="text-xl font-bold text-white">
+                        {artifact.name}
+                      </h3>
                     </div>
                   </div>
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium">
+                        {artifact.type}
+                      </span>
+                      <div className="flex items-center text-amber-600">
+                        <FaHeart className="mr-1" />
+                        <span>{artifact.likedBy.length}</span>
+                      </div>
+                    </div>
 
-                  <div className="flex items-center text-sm text-amber-700 mb-3">
-                    <FaClock className="mr-2" />
-                    <span>{artifact.createdAt}</span>
-                  </div>
+                    <div className="flex items-center text-sm text-amber-700 mb-3">
+                      <FaClock className="mr-2" />
+                      <span>{artifact.createdAt}</span>
+                    </div>
 
-                  <p className="text-gray-600 mb-4 line-clamp-2">
-                    {artifact.shortDescription}
-                  </p>
+                    <p className="text-gray-600 mb-4 line-clamp-2">
+                      {artifact.shortDescription}
+                    </p>
 
-                  <div className="flex justify-between mt-6">
-                    <Link
-                      to={`/dashboard/update-artifact/${artifact._id}`}
-                      className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
-                    >
-                      <FaEdit className="mr-2" />
-                      Edit
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(artifact._id)}
-                      className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
-                    >
-                      <FaTrash className="mr-2" />
-                      Delete
-                    </button>
+                    <div className="flex justify-between mt-6">
+                      <Link
+                        to={`/dashboard/update-artifact/${artifact._id}`}
+                        className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                      >
+                        <FaEdit className="mr-2" />
+                        Edit
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(artifact._id)}
+                        className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
+                      >
+                        <FaTrash className="mr-2" />
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center mt-8 space-x-2">
+                <button
+                  onClick={() => goToPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 bg-amber-500 text-white rounded disabled:bg-gray-300"
+                >
+                  Prev
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => goToPage(i + 1)}
+                    className={`px-4 py-2 rounded ${
+                      currentPage === i + 1
+                        ? "bg-amber-700 text-white"
+                        : "bg-amber-200 text-amber-800 hover:bg-amber-300"
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+                <button
+                  onClick={() => goToPage(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 bg-amber-500 text-white rounded disabled:bg-gray-300"
+                >
+                  Next
+                </button>
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
       </div>
     </div>
