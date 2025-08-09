@@ -3,6 +3,8 @@ import FeatureGroup from "../Components/FeatureGroup";
 import TimelineSection from "../Components/TimeLineSection";
 import PreservationTips from "../Components/PreservationTips";
 import { Helmet } from "react-helmet";
+import ConservationSuccessStories from "../Components/ConservationSuccessStories";
+import UserReviews from "../Components/UserReviews";
 
 const HomePage = () => {
   return (
@@ -26,6 +28,10 @@ const HomePage = () => {
       
       <section id="tips">
         <PreservationTips />
+      </section>
+      
+      <section>
+        <UserReviews/>
       </section>
     </div>
   );
