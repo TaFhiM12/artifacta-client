@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { NavLink, Link, Outlet } from "react-router";
+import { NavLink, Link, Outlet, useNavigate } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FiPlusSquare,
@@ -16,6 +16,7 @@ import Swal from "sweetalert2";
 const Dashboard = () => {
   const { user, signOutUser , setUser } = useContext(AuthContext);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const Navigate = useNavigate();
   
    const handleSignOut = () => {
       Swal.fire({
