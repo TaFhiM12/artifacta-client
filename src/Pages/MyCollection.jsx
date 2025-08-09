@@ -3,27 +3,19 @@ import LoadingSpinner from "../Components/LoadingSpinner";
 import { AuthContext } from "../Contexts/AuthContext";
 import { Link } from "react-router";
 import Swal from "sweetalert2";
-import {
-  FaTrash,
-  FaEdit,
-  FaBoxOpen,
-  FaPlus,
-  FaHeart,
-  FaClock,
-} from "react-icons/fa";
+import { FaTrash, FaEdit, FaBoxOpen, FaPlus, FaHeart, FaClock } from "react-icons/fa";
 import { Helmet } from "react-helmet";
 import useAxiosSecure from "../hooks/useAxiosSecure";
+import { motion } from "framer-motion";
 
 const MyCollection = () => {
   const { user } = useContext(AuthContext);
   const [myArtifacts, setMyArtifacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Pagination states
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6; // change to show more or fewer per page
-
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 6;
   const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
@@ -32,16 +24,15 @@ const MyCollection = () => {
       try {
         if (user?.email) {
           const response = await axiosSecure.get(
-            `/artifacts/myCollection/${user.email}`
+            `/artifacts/myCollection/${user.email}?page=${page}&limit=${limit}`
           );
-          setMyArtifacts(response.data);
+          setMyArtifacts(response.data.data || []);
+          setTotalPages(response.data.totalPages || 1);
           setError(null);
         }
       } catch (error) {
         console.error("Error fetching my collection:", error);
-        if (error.response?.status !== 404) {
-          setError("Failed to load your collection. Please try again later.");
-        }
+        setError(error.response?.data?.message || "Failed to load collection");
         setMyArtifacts([]);
       } finally {
         setLoading(false);
@@ -49,110 +40,81 @@ const MyCollection = () => {
     };
 
     fetchMyArtifacts();
-  }, [user, axiosSecure]);
+  }, [user, axiosSecure, page]);
 
   const handleDelete = async (id) => {
     const result = await Swal.fire({
       title: "Are you sure?",
-      text: "This will permanently delete your artifact from the collection",
-      icon: "question",
+      text: "This will permanently delete your artifact",
+      icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Delete",
       cancelButtonText: "Cancel",
       background: "#f8f4e9",
-      backdrop: `
-        rgba(0,0,0,0.6)
-        url("/images/archaeology-icon.png")
-        center top
-        no-repeat
-      `,
       customClass: {
         popup: "border-2 border-amber-700 rounded-xl",
-        title: "text-amber-800 font-bold",
-        confirmButton: "hover:bg-red-700 transition-colors",
-        cancelButton: "hover:bg-blue-700 transition-colors",
-      },
+        title: "text-amber-800 font-bold"
+      }
     });
 
     if (result.isConfirmed) {
       try {
         const response = await axiosSecure.delete(`/artifacts/${id}`);
-
         if (response.status === 200) {
           await Swal.fire({
             title: "Deleted!",
-            text: "Your artifact has been removed.",
+            text: "Artifact removed successfully",
             icon: "success",
             timer: 2000,
-            timerProgressBar: true,
             showConfirmButton: false,
             background: "#f8f4e9",
             customClass: {
-              popup: "border-2 border-green-500 rounded-xl",
-              title: "text-green-700 font-bold",
-            },
-            willClose: () => {
-              setMyArtifacts((prev) =>
-                prev.filter((artifact) => artifact._id !== id)
-              );
-            },
+              popup: "border-2 border-green-500 rounded-xl"
+            }
           });
+          setMyArtifacts(prev => prev.filter(artifact => artifact._id !== id));
         }
       } catch (error) {
-        console.error("Error deleting artifact:", error);
         await Swal.fire({
           title: "Error!",
-          text: error.response?.data?.message || "Failed to delete artifact",
+          text: error.response?.data?.message || "Delete failed",
           icon: "error",
-          confirmButtonText: "OK",
-          confirmButtonColor: "#3085d6",
           background: "#f8f4e9",
           customClass: {
-            popup: "border-2 border-red-500 rounded-xl",
-            title: "text-red-700 font-bold",
-          },
+            popup: "border-2 border-red-500 rounded-xl"
+          }
         });
       }
     }
   };
 
-  // Pagination calculations
-  const totalPages = Math.ceil(myArtifacts.length / itemsPerPage);
-  const indexOfLast = currentPage * itemsPerPage;
-  const indexOfFirst = indexOfLast - itemsPerPage;
-  const currentArtifacts = myArtifacts.slice(indexOfFirst, indexOfLast);
-
-  const goToPage = (page) => {
-    if (page > 0 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
-
   if (loading) return <LoadingSpinner />;
-  if (error)
-    return (
-      <div className="text-center mt-20 text-red-500 font-medium">{error}</div>
-    );
+  if (error) return <div className="text-center mt-20 text-red-500 font-medium">{error}</div>;
 
   return (
-    <div className="min-h-screen md:px-4 py-8">
+    <div className="min-h-screen bg-amber-50 py-12 px-4 sm:px-6 lg:px-8">
       <Helmet>
         <title>Artifacta | My Collection</title>
       </Helmet>
+      
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-2xl font-bold text-amber-800 mb-4 relative inline-block">
-            <span className="relative">My Artifact Collection</span>
+          <h1 className="text-3xl font-bold text-amber-800 mb-2">
+            My Artifact Collection
           </h1>
-          <p className="text-lg text-stone-600 max-w-2xl mx-auto">
+          <p className="text-lg text-amber-600">
             Your personal museum of historical treasures
           </p>
         </div>
 
         {myArtifacts.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-lg p-8 max-w-2xl mx-auto text-center">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-xl shadow-lg p-8 max-w-2xl mx-auto text-center border border-amber-200"
+          >
             <div className="bg-amber-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
               <FaBoxOpen className="text-amber-600 text-4xl" />
             </div>
@@ -160,110 +122,123 @@ const MyCollection = () => {
               Your Collection is Empty
             </h2>
             <p className="text-amber-600 mb-6">
-              Start your journey as a curator by adding your first historical
-              artifact
+              Start your journey by adding your first historical artifact
             </p>
             <Link
               to="/addArtifacts"
               className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white font-medium rounded-lg hover:from-amber-600 hover:to-amber-700 transition-all shadow-md hover:shadow-lg"
             >
-              <FaPlus className="mr-2" />
-              Add First Artifact
+              <FaPlus className="mr-2" /> Add First Artifact
             </Link>
-          </div>
+          </motion.div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {currentArtifacts.map((artifact) => (
-                <div
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {myArtifacts.map((artifact) => (
+                <motion.div
                   key={artifact._id}
-                  className="bg-white rounded-xl shadow-md overflow-hidden border border-amber-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ y: -5 }}
+                  className="bg-white rounded-xl shadow-md overflow-hidden border border-amber-100 hover:shadow-xl transition-all duration-300"
                 >
-                  <div className="relative h-56 overflow-hidden">
+                  <div className="relative h-60 overflow-hidden group">
                     <img
                       src={artifact.imageUrl}
                       alt={artifact.name}
-                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src =
-                          "https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80";
+                        e.target.src = "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=500&q=80";
                       }}
                     />
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent p-4 flex flex-col justify-end">
                       <h3 className="text-xl font-bold text-white">
                         {artifact.name}
                       </h3>
+                      <div className="flex items-center text-sm text-amber-200 mt-1">
+                        <FaClock className="mr-1" />
+                        <span>{artifact.createdAt}</span>
+                      </div>
                     </div>
                   </div>
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium">
+                  
+                  <div className="p-5">
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-semibold">
                         {artifact.type}
                       </span>
                       <div className="flex items-center text-amber-600">
                         <FaHeart className="mr-1" />
-                        <span>{artifact.likedBy.length}</span>
+                        <span className="font-medium">{artifact.likedBy?.length || 0}</span>
                       </div>
-                    </div>
-
-                    <div className="flex items-center text-sm text-amber-700 mb-3">
-                      <FaClock className="mr-2" />
-                      <span>{artifact.createdAt}</span>
                     </div>
 
                     <p className="text-gray-600 mb-4 line-clamp-2">
                       {artifact.shortDescription}
                     </p>
 
-                    <div className="flex justify-between mt-6">
+                    <div className="flex justify-between mt-4">
                       <Link
                         to={`/dashboard/update-artifact/${artifact._id}`}
-                        className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                        className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
                       >
-                        <FaEdit className="mr-2" />
-                        Edit
+                        <FaEdit className="mr-2" /> Edit
                       </Link>
                       <button
                         onClick={() => handleDelete(artifact._id)}
-                        className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
+                        className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
                       >
-                        <FaTrash className="mr-2" />
-                        Delete
+                        <FaTrash className="mr-2" /> Delete
                       </button>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
 
-            {/* Pagination Controls */}
+            {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex justify-center mt-8 space-x-2">
+              <div className="flex justify-center mt-10 space-x-2">
                 <button
-                  onClick={() => goToPage(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="px-4 py-2 bg-amber-500 text-white rounded disabled:bg-gray-300"
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="px-4 py-2 bg-amber-100 text-amber-800 rounded-lg border border-amber-200 hover:bg-amber-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Prev
+                  Previous
                 </button>
-                {Array.from({ length: totalPages }, (_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => goToPage(i + 1)}
-                    className={`px-4 py-2 rounded ${
-                      currentPage === i + 1
-                        ? "bg-amber-700 text-white"
-                        : "bg-amber-200 text-amber-800 hover:bg-amber-300"
-                    }`}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
+                
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let pageNum;
+                  if (totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (page <= 3) {
+                    pageNum = i + 1;
+                  } else if (page >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    pageNum = page - 2 + i;
+                  }
+                  
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => setPage(pageNum)}
+                      className={`px-4 py-2 rounded-lg border ${
+                        page === pageNum
+                          ? "bg-amber-600 text-white border-amber-600"
+                          : "bg-white text-amber-800 border-amber-200 hover:bg-amber-50"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+                
                 <button
-                  onClick={() => goToPage(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="px-4 py-2 bg-amber-500 text-white rounded disabled:bg-gray-300"
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  className="px-4 py-2 bg-amber-100 text-amber-800 rounded-lg border border-amber-200 hover:bg-amber-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Next
                 </button>
